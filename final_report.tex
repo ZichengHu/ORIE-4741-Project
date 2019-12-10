@@ -190,12 +190,14 @@ According to the histogram of our price range (between \$10 and \$1000), the res
 
 \section{Regression Modeling}
 \subsection{Model Evaluation}
-We used Root Mean Squared Error (RMSE) between the logarithm of the predicted price and the logarithm of the actual sales price. As we mentioned in the previous section, by taking the logarithm on the prices we can make sure that the errors in predicting high prices and low prices will affect the result equally.
+For model evaluation we chose quadratic loss function over other loss functions. Since our response variable, price, is continuous in values and there are relatively equal costs between overestimation and underestimation (the prediction is a reference for both the renters and the hosts). In this case, quadratic loss is mathematically more tractable and also more suitable for such symmetric properties in the variance. 
+
+Specifically, we used Root Mean Squared Error (RMSE) between the logarithm of the predicted prices and the logarithm of the actual prices. As mentioned in the previous section, by taking the logarithm on the prices we can make sure that the errors in predicting high prices and low prices will affect the result equally.
 \begin{align}  
     \displaystyle{RMSE = \sqrt{\frac {\sum_{i = 1}^{n}(\hat{y}_{i} - y_{i})^2}{n}}}
 \end{align}
 \subsection{Linear Model}
-We first fitted a simple linear model by solving the least squares problem and used it as a baseline for our project. In this case, there is no unique solution to the problem due to some linear dependence between features. Therefore, we need to include a regularization term to ensure the validity of our linear model.
+We first fitted a simple linear model by solving the least squares problem and used it as a baseline for our project. In this case, there is no unique solution to the problem due to the linear dependence between features and the feature space being non-invertible. Therefore, we need to include a regularization term to ensure the validity of our linear model.
 
 \subsubsection{Lasso Regression}
 Firstly, we added al1 regularizer to the least squared optimization problem to ensure a unique solution. Fitting a lasso model as our basic model could both give us a benchmark on how models are performing on our dataset and help us understand the importance of the variables in determining the prices. 
@@ -264,7 +266,7 @@ From the table below, the gradient boosting regressor gives the best test RMSE. 
  XG Boosting& 0.41529\\
  \hline
 \end{tabular}
-\caption{Table for model selection}
+\caption{Table for Model Selection}
 \label{table:1}
 \end{table}
 \section{Conclusion}
@@ -272,9 +274,11 @@ From the table below, the gradient boosting regressor gives the best test RMSE. 
 Smart pricing models are being used by online rental marketplace like Airbnb to give reference prices and we were trying to produce a smart pricing model based on Airbnb New York Open Data. Through our modeling processes, we noted that linear models tend to underfit our dadaset. To overcome the underfitting problem, we used several more flexible models: random forest, gradient boosting, and XGBoost. It turns out that the gradient boosting regressor produced lowest test error. Hence, with the current dataset, one should use the gradient boosting algorithm to get a better reference to the market prices. 
 
 \section{Limitation and Fairness}
-A potential problem on the smart pricing model is that property brokers like Airbnb could force lower property rent prices based on our model to attract more customers  to the online marketplace and improve their overall profits. And this potential abuse of the smart pricing model may hurt the property owners because they will have to take prices that are lower than the intrinsic value of their properties. 
+\subsection{Weapon of Math Destruction}
+After careful review of our entire modeling process and outcomes, we conclude that this project is unlikely to become a weapon of math destruction. There are three main reasons: the outcomes are clearly stated and easy to measure (just the listing price predictions); the modeling process is static and unidirectional (using relevant property information to predict its price) so there is no feedback loop; the predictions are only for reference purposes so it is hard to infer any damaging effect to the society. Despite the above reasoning, we still acknowledge a potential problem on our smart pricing model. As we further improve the accuracy of our model so that they become more reliable and widely applicable, the property brokers like Airbnb could force lower property rent prices based on this model to attract more customers and maximize their profits. This potential abuse of our smart pricing model may hurt the property owners economically because they will have to take prices that are lower than the intrinsic value of their properties. 
 
-As for fairness concern, since the properties of different property types or located in different geographical regional are being evaluated by the same model, there is no discrimination on property features and this fact guarantees the fairness of our method. 
+\subsection{Fairness}
+There is no significant fairness concern in this project due to the dataset itself. As we check across all used features in our model, majority of them are numerical values reflecting objective information about such as user review frequency and geographic location on the property listings. On the other hand, the remaining categorical features like room type and neighborhood are distinguishing factors by nature, as we can easily see that an entire house in downtown Manhattan will cost significantly more to rent than a shared room in Brooklyn suburban area. Since we are evaluating all features by the same methods to make predictions, there should be no apparent discrimination associated with our prediction models.  
 
 \section{Potential Improvement}
 \subsection{Additional Features}
